@@ -25,5 +25,7 @@ const connectDB = async () => {
 };
 
 await connectDB();
-
+app.get("/", (req, res) => {
+    res.send("SigmaGPT Backend is running!");
+});
 export default app;
