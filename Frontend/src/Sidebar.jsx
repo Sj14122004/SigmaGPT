@@ -37,7 +37,10 @@ function Sidebar() {
 
         try {
             // const response = await fetch(`http://localhost:8080/api/thread/${newThreadId}`);
-            const response = fetch(`${import.meta.env.VITE_BACKEND_URL}/api/thread/${newThreadId}`);
+            const response = await fetch(
+                `${import.meta.env.VITE_BACKEND_URL}/api/thread/${newThreadId}`
+            );
+
             const res = await response.json();
             console.log(res);
             setPrevChats(res);
@@ -70,7 +73,7 @@ function Sidebar() {
     return (
         <section className="sidebar">
             <button onClick={createNewChat}>
-                <img src="src/assets/blacklogo.png" alt="gpt logo" className="logo"></img>
+                <img src="./assets/blacklogo.png" alt="gpt logo" className="logo"></img>
                 <span><i className="fa-solid fa-pen-to-square"></i></span>
             </button>
 
@@ -95,7 +98,7 @@ function Sidebar() {
             </ul>
  
             <div className="sign">
-                <p>By ApnaCollege &hearts;</p>
+                <p>By Shivam &hearts;</p>
             </div>
         </section>
     )
