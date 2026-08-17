@@ -1,20 +1,50 @@
 import "dotenv/config";
-import { GoogleGenAI } from "@google/genai";
-
-const ai = new GoogleGenAI({
-    apiKey: process.env.GEMINI_API_KEY
-});
 
 const getOpenAIAPIResponse = async (message) => {
     try {
-        const response = await ai.models.generateContent({
-            model: "gemini-3.5-flash-lite",
-            contents: message
-        });
+        const apiKey = process.env.GEMINI_API_KEY;
 
-        console.log("Gemini response received");
+        const response = await fetch(
+            `https://generativelanguage.googleapis.com/v1beta/models/gemini-3.5-flash-lite:generateContent?key=${apiKey}`,
+            {
+                method: "POST",
+                headers: {
+                    "Content-Type": "application/json"
+                },
+                body: JSON.stringify({
+                    contents: [
+                        {
+                            parts: [
+                                {
+                                    text: message
+                                }
+                            ]
+                        }
+                    ]
+                })
+            }
+        );
 
-        return response.text;
+        const data = await response.json();
+
+        console.log("Gemini status:", response.status);
+
+        if (!response.ok) {
+            console.log("Gemini response:", data);
+
+            throw new Error(
+                data?.error?.message || "Gemini API request failed"
+            );
+        }
+
+        const reply = data?.candidates?.[0]?.content?.parts?.[0]?.text;
+
+        if (!reply) {
+            console.log("Gemini returned:", data);
+            throw new Error("Gemini did not return a response");
+        }
+
+        return reply;
 
     } catch (err) {
         console.log("Gemini Error:", err);
